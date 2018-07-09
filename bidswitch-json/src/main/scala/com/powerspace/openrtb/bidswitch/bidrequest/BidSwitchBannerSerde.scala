@@ -12,16 +12,21 @@ import com.powerspace.openrtb.json.util.EncodingUtils
   */
 object BidSwitchBannerSerde extends EncoderProvider[Imp.Banner] {
 
-  import EncodingUtils._
   import JsonUtils._
   import io.circe._
-  import io.circe.generic.extras.semiauto._
   import io.circe.syntax._
+  import EncodingUtils._
+  import io.circe.generic.extras.semiauto._
 
-  implicit val formatExt: Encoder[Format] = deriveEncoder[Format].cleanRtb
-  implicit val bannerExt: Encoder[BannerExt] = deriveEncoder[BannerExt].cleanRtb
+  implicit val formatEncoder: Encoder[Format] = deriveEncoder[Format].cleanRtb
+
+  implicit val bannerExtEncoder: Encoder[BannerExt] = deriveEncoder[BannerExt].cleanRtb
 
   implicit val encoder: Encoder[Imp.Banner] = banner =>
     OpenRtbBannerEncoder.encoder.apply(banner).addExtension(banner.extension(BidswitchProto.bannerExt).asJson)
+
+  implicit val formatDecoder: Decoder[Format] = deriveDecoder[Format]
+
+  val bannerExtDecoder: Decoder[BannerExt] = deriveDecoder[BannerExt]
 
 }

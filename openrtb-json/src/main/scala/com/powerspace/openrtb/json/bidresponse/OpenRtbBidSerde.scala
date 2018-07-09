@@ -4,6 +4,7 @@ import com.google.openrtb.BidResponse.SeatBid
 import com.google.openrtb.BidResponse.SeatBid.Bid.AdmOneof
 import com.google.openrtb._
 import com.powerspace.openrtb.json.EncoderProvider
+import com.powerspace.openrtb.json.OpenRtbExtensions.ExtensionRegistry
 import com.powerspace.openrtb.json.common.OpenRtbProtobufEnumEncoders
 import com.powerspace.openrtb.json.util.EncodingUtils
 import io.circe.parser.decode
@@ -12,7 +13,7 @@ import io.circe.parser.decode
   * OpenRTB Bid Encoder and Decoder
   * @todo split up decoder and encoder
   */
-object OpenRtbBidSerde extends EncoderProvider[BidResponse.SeatBid.Bid] {
+class OpenRtbBidSerde(implicit er: ExtensionRegistry) extends EncoderProvider[BidResponse.SeatBid.Bid] {
 
   import io.circe._
   import io.circe.syntax._
@@ -25,7 +26,7 @@ object OpenRtbBidSerde extends EncoderProvider[BidResponse.SeatBid.Bid] {
     case AdmOneof.Adm(string) => string.asJson
     case AdmOneof.AdmNative(native) => native.asJson
   }
-  def encoder: Encoder[BidResponse.SeatBid.Bid] = deriveEncoder[BidResponse.SeatBid.Bid].cleanRtb
+  def encoder: Encoder[BidResponse.SeatBid.Bid] = extendedEncoder[BidResponse.SeatBid.Bid]
 
 
   implicit val nativeDecoder: Decoder[NativeResponse] = OpenRtbNativeSerde.decoder.prepare(_.downField("native"))
@@ -49,7 +50,8 @@ object OpenRtbBidSerde extends EncoderProvider[BidResponse.SeatBid.Bid] {
   }
 
   def decoder: Decoder[BidResponse.SeatBid.Bid] =
-    cursor => for {
+    er.decoderWithExtensions(
+      {cursor => for {
       id <- cursor.downField("id").as[String]
       impid <- cursor.downField("impid").as[String]
       price <- cursor.downField("price").as[Double]
@@ -86,6 +88,5 @@ object OpenRtbBidSerde extends EncoderProvider[BidResponse.SeatBid.Bid] {
         api = api, protocol = protocol, qagmediarating = qagmediarating, dealid = dealid, w = w, h = h,
         exp = exp, burl = burl, lurl = lurl, tactic = tactic, language = language, wratio = wratio,
         hratio = hratio, admOneof = admOneof.getOrElse(AdmOneof.Empty))
-    }
-
+    }})
 }

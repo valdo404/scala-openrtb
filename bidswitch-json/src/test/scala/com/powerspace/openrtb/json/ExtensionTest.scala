@@ -1,37 +1,42 @@
 package com.powerspace.openrtb.json
 
-import com.google.openrtb.BidRequest
+import com.google.openrtb.{BidRequest, BidResponse}
 import com.powerspace.bidswitch.{BidRequestExt, BidswitchProto}
+import com.powerspace.openrtb.bidswitch.BidSwitchSerdeModule
 import com.powerspace.openrtb.bidswitch.bidrequest.BidSwitchBidRequestSerde
+import com.powerspace.openrtb.bidswitch.bidresponse.BidSwitchBidResponseSerde
 import io.circe.Decoder.Result
 import io.circe.{Decoder, Encoder, HCursor, Json}
 import org.scalatest.{FunSuite, GivenWhenThen}
+import scalapb.GeneratedExtension
 
 class ExtensionTest extends FunSuite with GivenWhenThen {
 
-  import OpenrtbExtensions._
-  val decoder: Decoder[BidRequestExt] = new Decoder[BidRequestExt] {
-    override def apply(c: HCursor): Result[BidRequestExt] = ???
-  }
+  import OpenRtbExtensions._
 
-  val bidRequestExt = BidswitchProto.bidRequestExt
-  val bidRequestExtEncoder = BidSwitchBidRequestSerde.bidRequestExt
-  val bidRequestExtDecoder = decoder
-  val baseEncoder = OpenRtbSerdeModule.bidRequestEncoder
+  val bidRequestExt: GeneratedExtension[BidRequest, Option[BidRequestExt]] = BidswitchProto.bidRequestExt
+  val bidRequestExtEncoder: Encoder[BidRequestExt] = BidSwitchBidRequestSerde.bidRequestExtEncoder
+  val bidRequestExtDecoder: Decoder[BidRequestExt] =  BidSwitchBidRequestSerde.bidRequestExtDecoder
+
+  private val module = BidSwitchSerdeModule
+  val baseEncoder = module.bidResponseEncoder
+  val baseDecoder = module.bidResponseDecoder
 
   test("Automatic encoder builder") {
-    val extensionRegistry = ExtensionRegistry(Seq())
-      .registerExtension[BidRequest, BidRequestExt](
-      extension = bidRequestExt,
-      encoder = bidRequestExtEncoder,
-      decoder = bidRequestExtDecoder)
+    val bidswitchDecoder = module.bidResponseDecoder
+    val bidswitchRespEncoder = module.bidResponseEncoder
 
+    val bidResponse = com.powerspace.openrtb.bidswitch.BidResponseFixtures.sampleBidResponse(true)
 
-    val bidswitchEncoder = extensionRegistry.encoderWithExtensions[BidRequest](baseEncoder)
+    val responseJson = bidswitchRespEncoder.apply(bidResponse)
+    println(responseJson)
 
-    val result = bidswitchEncoder.apply(com.powerspace.openrtb.bidswitch.BidRequestFixtures.sampleBidRequest(true))
-      .hcursor.downField("ext").as[Json]
+    val resp = bidswitchDecoder.decodeJson(responseJson)
+    val bidResponseExtension = resp.map(_.extension(BidswitchProto.bidResponseExt)).toTry.get.get
+    println(BidSwitchBidResponseSerde.bidResponseExtDecoder.decodeJson(responseJson))
 
-    assert(result.toOption.isDefined)
+    assert(bidResponseExtension.protocol.contains("protocol-1"))
+    println(resp)
   }
+
 }

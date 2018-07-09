@@ -18,10 +18,12 @@ object OpenRtbPmpSerde extends EncoderProvider[Imp.Pmp] {
   import OpenRtbProtobufEnumDecoders._
   import io.circe._
 
-  implicit val dealEncoder: Encoder[Imp.Pmp.Deal] = openRtbEncoder[Deal]
-  def encoder: Encoder[Imp.Pmp] = openRtbEncoder[Imp.Pmp]
+  val dealEncoder: Encoder[Imp.Pmp.Deal] = openRtbEncoder[Deal]
 
-  implicit val dealDecoder: Decoder[Imp.Pmp.Deal] = openRtbDecoder[Deal]
-  def decoder: Decoder[Imp.Pmp] = openRtbDecoder[Imp.Pmp]
+  def encoder(implicit dealEncoder: Encoder[Imp.Pmp.Deal]): Encoder[Imp.Pmp] = openRtbEncoder[Imp.Pmp]
+
+  val dealDecoder: Decoder[Imp.Pmp.Deal] = openRtbDecoder[Deal]
+
+  def decoder(implicit dealDecoder: Decoder[Imp.Pmp.Deal]): Decoder[Imp.Pmp] = openRtbDecoder[Imp.Pmp]
 
 }

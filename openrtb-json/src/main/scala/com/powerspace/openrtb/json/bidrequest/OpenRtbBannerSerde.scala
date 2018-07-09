@@ -12,8 +12,8 @@ import com.powerspace.openrtb.json.common.OpenRtbProtobufEnumDecoders
   */
 object OpenRtbBannerSerde extends EncoderProvider[Imp.Banner] {
 
-    import io.circe._
     import EncodingUtils._
+    import io.circe._
 
     object OpenRtbBannerEncoder {
         import OpenRtbProtobufEnumEncoders._

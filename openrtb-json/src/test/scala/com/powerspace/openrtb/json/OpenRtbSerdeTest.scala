@@ -5,6 +5,7 @@ import java.net.URL
 import com.google.openrtb._
 import com.powerspace.openrtb.json.BidRequestFixtures._
 import com.powerspace.openrtb.json.BidResponseFixtures._
+import com.powerspace.openrtb.json.OpenRtbExtensions.ExtensionRegistry
 import com.powerspace.openrtb.json.util.EncodingUtils
 import io.circe.Json
 import io.circe.parser._
@@ -17,7 +18,10 @@ import org.scalatest.{FunSuite, GivenWhenThen}
 class OpenRtbSerdeTest extends FunSuite with GivenWhenThen {
 
   import EncodingUtils._
-  import OpenRtbSerdeModule._
+
+  implicit val extensionRegistry = ExtensionRegistry()
+  val module = new OpenRtbSerdeModule()
+  import module._
 
   test("OpenRTB-like bid response deserialization") {
     Given("An OpenRTB-like bid response in JSON format with a string-ed native response")
