@@ -1,17 +1,16 @@
 import sbt.url
 
-sonatypeProfileName in ThisBuild := "com.powerspace"
-
 publishMavenStyle in ThisBuild := true
+publishConfiguration in ThisBuild := publishConfiguration.value.withOverwrite(true)
 
 licenses in ThisBuild := Seq("APL2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
-homepage in ThisBuild := Some(url("https://github.com/Powerspace/scala-openrtb"))
+homepage in ThisBuild := Some(url("https://github.com/valdo404/scala-openrtb"))
 
 scmInfo in ThisBuild := Some(
   ScmInfo(
-    url("https://github.com/Powerspace/scala-openrtb"),
-    "scm:git@github.com:Powerspace/scala-openrtb.git"
+    url("https://github.com/valdo404/scala-openrtb"),
+    "scm:git@github.com:valdo404/scala-openrtb.git"
   )
 )
 
@@ -38,8 +37,5 @@ developers in ThisBuild := List(
     url = url("https://github.com/Garnek20"))
 )
 
-pomIncludeRepository in ThisBuild := { _ =>
-  false
-}
-publishTo in ThisBuild := sonatypePublishToBundle.value
+pomIncludeRepository  in ThisBuild:= { _ => false }
 publishMavenStyle in ThisBuild := true
