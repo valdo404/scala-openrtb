@@ -10,3 +10,9 @@ project/plugins/project/
 .cache
 .lib/
 *.log
+.metals
+.vscode
+.bloop
+.ipynb*
+metals.sbt
+

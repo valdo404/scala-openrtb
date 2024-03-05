@@ -3,7 +3,7 @@ name := "scala-openrtb"
 version in ThisBuild := "1.4.0"
 
 
-scalaVersion in ThisBuild       := "2.13.1"
+scalaVersion in ThisBuild       := "2.13.12"
 crossScalaVersions in ThisBuild := Seq("2.12.10", "2.13.1")
 organization in ThisBuild       := "com.powerspace.openrtb"
 organizationName in ThisBuild   := "Powerspace"
