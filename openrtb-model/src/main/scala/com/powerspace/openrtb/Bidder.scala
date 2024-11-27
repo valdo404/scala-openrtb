@@ -1,8 +1,1 @@
-package com.powerspace.openrtb
-
-import com.google.openrtb.{BidRequest, BidResponse}
-
-trait Bidder[F[_]] {
-  def bidOn(bidRequest: BidRequest): F[Option[BidResponse]]
-}
-
+cGFja2FnZSBjb20ucG93ZXJzcGFjZS5vcGVucnRiCgppbXBvcnQgY29tLmdvb2dsZS5vcGVucnRiLntCaWRSZXF1ZXN0LCBCaWRSZXNwb25zZX0KCnRyYWl0IEJpZGRlcltGW19dXSB7CiAgZGVmIGJpZE9uKGJpZFJlcXVlc3Q6IEJpZFJlcXVlc3QpOiBGW09wdGlvbltCaWRSZXNwb25zZV1dCn0KCgo=
